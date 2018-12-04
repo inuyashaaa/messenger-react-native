@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,9 @@ import {
   Animated,
   PanResponder,
   TouchableWithoutFeedback,
-  ViewPropTypes
-} from "react-native";
-import PropTypes from "prop-types";
+  ViewPropTypes,
+} from 'react-native';
+import PropTypes from 'prop-types';
 
 export class Switch extends Component {
   static propTypes = {
@@ -38,7 +38,7 @@ export class Switch extends Component {
     renderInActiveText: PropTypes.bool,
     switchLeftPx: PropTypes.number,
     switchRightPx: PropTypes.number,
-    switchWidthMultiplier: PropTypes.number
+    switchWidthMultiplier: PropTypes.number,
   };
 
   static defaultProps = {
@@ -47,25 +47,25 @@ export class Switch extends Component {
     renderInsideCircle: () => null,
     innerCircleStyle: {},
     disabled: false,
-    activeText: "On",
-    inActiveText: "Off",
-    backgroundActive: "green",
-    backgroundInactive: "gray",
-    circleActiveColor: "white",
-    circleInActiveColor: "white",
-    circleBorderActiveColor: "rgb(100, 100, 100)",
-    circleBorderInactiveColor: "rgb(80, 80, 80)",
+    activeText: 'On',
+    inActiveText: 'Off',
+    backgroundActive: 'green',
+    backgroundInactive: 'gray',
+    circleActiveColor: 'white',
+    circleInActiveColor: 'white',
+    circleBorderActiveColor: 'rgb(100, 100, 100)',
+    circleBorderInactiveColor: 'rgb(80, 80, 80)',
     circleSize: 30,
     barHeight: null,
     circleBorderWidth: 1,
     changeValueImmediately: true,
-    innerCircleStyle: { alignItems: "center", justifyContent: "center" },
+    innerCircleStyle: { alignItems: 'center', justifyContent: 'center' },
     outerCircleStyle: {},
     renderActiveText: false,
     renderInActiveText: false,
     switchLeftPx: 2,
     switchRightPx: 2,
-    switchWidthMultiplier: 2
+    switchWidthMultiplier: 2,
   };
 
   constructor(props, context) {
@@ -76,7 +76,7 @@ export class Switch extends Component {
       transformSwitch: new Animated.Value(
         props.value
           ? props.circleSize / props.switchLeftPx
-          : -props.circleSize / props.switchRightPx
+          : -props.circleSize / props.switchRightPx,
       ),
       backgroundColor: new Animated.Value(props.value ? 75 : -75),
       circleColor: new Animated.Value(props.value ? 75 : -75),
@@ -107,7 +107,7 @@ export class Switch extends Component {
       onValueChange,
       disabled,
       changeValueImmediately,
-      value: propValue
+      value: propValue,
     } = this.props;
     if (disabled) {
       return;
@@ -128,25 +128,27 @@ export class Switch extends Component {
       Animated.spring(this.state.transformSwitch, {
         toValue: value
           ? this.props.circleSize / this.props.switchLeftPx
-          : -this.props.circleSize / this.props.switchRightPx
+          : -this.props.circleSize / this.props.switchRightPx,
       }),
       Animated.timing(this.state.backgroundColor, {
         toValue: value ? 75 : -75,
-        duration: 200
+        duration: 200,
       }),
       Animated.timing(this.state.circleColor, {
         toValue: value ? 75 : -75,
-        duration: 200
+        duration: 200,
       }),
       Animated.timing(this.state.circleBorderColor, {
         toValue: value ? 75 : -75,
-        duration: 200
+        duration: 200,
       }),
     ]).start(cb);
   }
 
   render() {
-    const { transformSwitch, backgroundColor, circleColor, circleBorderColor } = this.state;
+    const {
+      transformSwitch, backgroundColor, circleColor, circleBorderColor,
+    } = this.state;
 
     const {
       backgroundActive,
@@ -168,22 +170,22 @@ export class Switch extends Component {
       renderActiveText,
       renderInActiveText,
       renderInsideCircle,
-      switchWidthMultiplier
+      switchWidthMultiplier,
     } = this.props;
 
     const interpolatedColorAnimation = backgroundColor.interpolate({
       inputRange: [-75, 75],
-      outputRange: [backgroundInactive, backgroundActive]
+      outputRange: [backgroundInactive, backgroundActive],
     });
 
     const interpolatedCircleColor = circleColor.interpolate({
       inputRange: [-75, 75],
-      outputRange: [circleInActiveColor, circleActiveColor]
+      outputRange: [circleInActiveColor, circleActiveColor],
     });
-    
+
     const interpolatedCircleBorderColor = circleBorderColor.interpolate({
       inputRange: [-75, 75],
-      outputRange: [circleInactiveBorderColor, circleActiveBorderColor]
+      outputRange: [circleInactiveBorderColor, circleActiveBorderColor],
     });
 
     return (
@@ -197,8 +199,8 @@ export class Switch extends Component {
                 backgroundColor: interpolatedColorAnimation,
                 width: circleSize * switchWidthMultiplier,
                 height: barHeight || circleSize,
-                borderRadius: circleSize
-              }
+                borderRadius: circleSize,
+              },
             ]}
           >
 
@@ -209,9 +211,9 @@ export class Switch extends Component {
               styles.animatedContainer,
               {
                 left: transformSwitch,
-                width: circleSize * switchWidthMultiplier
+                width: circleSize * switchWidthMultiplier,
               },
-              outerCircleStyle
+              outerCircleStyle,
             ]}
           >
             {renderActiveText && (
@@ -229,9 +231,9 @@ export class Switch extends Component {
                   backgroundColor: interpolatedCircleColor,
                   width: circleSize,
                   height: circleSize,
-                  borderRadius: circleSize / 2
+                  borderRadius: circleSize / 2,
                 },
-                innerCircleStyle
+                innerCircleStyle,
               ]}
             >
               {renderInsideCircle()}
@@ -256,30 +258,30 @@ const styles = StyleSheet.create({
     width: 71,
     height: 30,
     borderRadius: 30,
-    backgroundColor: "black"
+    backgroundColor: 'black',
   },
   animatedContainer: {
     flex: 1,
     width: 78,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    position: 'absolute'
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
   },
   circle: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "white"
+    backgroundColor: 'white',
   },
   text: {
-    color: "white",
-    backgroundColor: "transparent"
+    color: 'white',
+    backgroundColor: 'transparent',
   },
   paddingRight: {
-    paddingRight: 5
+    paddingRight: 5,
   },
   paddingLeft: {
-    paddingLeft: 5
-  }
+    paddingLeft: 5,
+  },
 });

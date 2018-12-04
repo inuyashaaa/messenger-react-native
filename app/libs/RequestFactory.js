@@ -29,11 +29,10 @@ const requestMap = {
 const instances = {};
 
 export default class RequestFactory {
-
   static getRequest(classname) {
-    let RequestClass = requestMap[classname];
+    const RequestClass = requestMap[classname];
     if (!RequestClass) {
-      throw new Error('Invalid request class name: ' + classname);
+      throw new Error(`Invalid request class name: ${classname}`);
     }
 
     let requestInstance = instances[classname];
@@ -44,5 +43,4 @@ export default class RequestFactory {
 
     return requestInstance;
   }
-
 }

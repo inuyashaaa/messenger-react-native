@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet, View, Text, AsyncStorage,
 } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 export default class SplashScreen extends Component {
   componentDidMount = async () => {
@@ -9,9 +10,6 @@ export default class SplashScreen extends Component {
   }
 
   getData = async () => {
-    console.log('====================================');
-    console.log('Get new data');
-    console.log('====================================');
     this.setAlbumsFromUrl();
   }
 
@@ -58,7 +56,14 @@ export default class SplashScreen extends Component {
       ];
 
       await AsyncStorage.setItem('albums', JSON.stringify(albums));
-      navigation.navigate('MainScreen');
+      // navigation.navigate('MainScreen');
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'MainScreen' }),
+        ],
+      });
+      navigation.dispatch(resetAction);
     } catch (error) {
       console.log('Error: ', error);
     }

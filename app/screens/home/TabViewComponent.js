@@ -28,9 +28,20 @@ export default class TabViewComponent extends Component {
         url: `data:${imageType};base64,${base64Str}`,
       };
       await Share.open(shareImageBase64);
+      this._setRecentTicket(image);
     } catch (error) {
       console.log('BaseTabs._handleSendImage._error: ', error);
     }
+  }
+
+  _setRecentTicket = async (image) => {
+    ticketRecent = await AsyncStorage.getItem('recentTickets');
+    const ticket = [image];
+    if (ticketRecent) {
+      const newTicketRecent = [...ticket, ...JSON.parse(ticketRecent)];
+      return await AsyncStorage.setItem('recentTickets', JSON.stringify(newTicketRecent));
+    }
+    await AsyncStorage.setItem('recentTickets', JSON.stringify(ticket));
   }
 
   _fetchUrlImage = async (image) => {

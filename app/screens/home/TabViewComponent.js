@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import {
-  View, ScrollView, TouchableOpacity, StyleSheet, AsyncStorage, Dimensions,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  AsyncStorage, Dimensions, FlatList,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -71,11 +75,19 @@ export default class TabViewComponent extends Component {
     if (!albums.length) {
       return null;
     }
-    const listImage = albums[positon].images.map((image, index) => this._renderImage(image, index));
-    return listImage;
+    console.log('==============================================');
+    console.log('Album: ', albums[1]);
+    console.log('==============================================');
+    return (
+      <FlatList
+        data={albums[positon].images}
+        renderItem={({ item }) => this._renderImage(item)}
+        numColumns={4}
+      />
+    );
   }
 
-  _renderImage = (image, index) => (
+  _renderImage = image => (
     <TouchableOpacity
       key={image.id}
       onPress={() => this._handleClickImage(image)}
@@ -84,7 +96,6 @@ export default class TabViewComponent extends Component {
         style={[
           { width: (width) / 4 },
           { height: (width) / 4 },
-          index % 4 !== 0 ? { paddingLeft: 10 } : { paddingLeft: 0 },
           { marginBottom: 10 },
         ]}
       >

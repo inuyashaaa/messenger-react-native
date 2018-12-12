@@ -3,11 +3,11 @@ import {
   StyleSheet, Text, View,
 } from 'react-native';
 
-export default class SettingScreen extends Component {
+export default class RecentScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Setting Screen</Text>
+        <Text>Recent Screen</Text>
       </View>
     );
   }

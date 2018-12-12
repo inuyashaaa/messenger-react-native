@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
-import { TabView } from 'react-native-tab-view';
+import { TabView, TabBar } from 'react-native-tab-view';
 import TabViewComponent from './TabViewComponent';
 
 const LazyPlaceholder = ({ route }) => (
@@ -79,11 +79,16 @@ export default class HomeScreen extends Component {
         navigationState={this.state}
         renderScene={this._renderScene}
         onIndexChange={this._handleIndexChange}
+        renderTabBar={props => (
+          <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: 'yellow' }}
+          />
+        )}
       />
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   scene: {

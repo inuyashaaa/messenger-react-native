@@ -7,14 +7,12 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import {} from 'react-native';
-import MainScreen from './app/screens/MainScreen';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import Screens from './app/screens/Screens';
 
-export default class App extends Component {
-  render() {
-    return (
-      <MainScreen />
-    );
-  }
-}
+const StackApp = createStackNavigator(Screens, {
+  mode: 'modal',
+  headerMode: 'none',
+});
+
+export default createAppContainer(StackApp);

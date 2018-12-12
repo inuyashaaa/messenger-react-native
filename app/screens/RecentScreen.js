@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  Text,
   StyleSheet,
   View,
   AsyncStorage,
   TouchableOpacity,
   Dimensions,
   ScrollView,
+  FlatList,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import TabViewComponent from './home/TabViewComponent';
@@ -24,9 +24,6 @@ export default class RecentScreen extends TabViewComponent {
   componentDidMount = async () => {
     const recentTickets = await AsyncStorage.getItem('recentTickets');
     this.setState({ recentTickets: JSON.parse(recentTickets) });
-    console.log('==============================================');
-    console.log('Recent: ', recentTickets);
-    console.log('==============================================');
   }
 
   _renderRecentListImage = () => {
@@ -34,29 +31,24 @@ export default class RecentScreen extends TabViewComponent {
     if (!recentTickets.length) {
       return null;
     }
-    const listImage = recentTickets.map((image, index) => this._renderImage(image, index));
-    return listImage;
+
+    return (
+      <FlatList
+        data={recentTickets}
+        renderItem={({ item }) => this._renderImage(item)}
+        numColumns={4}
+      />
+    );
   }
 
-  _renderImage = (image, index) => (
-    <TouchableOpacity
-      key={index}
-      onPress={() => this._handleClickImage(image)}
-    >
-      <View
-        style={[
-          { width: (width) / 4 },
-          { height: (width) / 4 },
-          index % 4 !== 0 ? { paddingLeft: 10 } : { paddingLeft: 0 },
-          { marginBottom: 10 },
-        ]}
-      >
-        <FastImage
-          style={{ flex: 1, width: undefined, height: undefined }}
-          source={{ uri: image.link, priority: FastImage.priority.normal }}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-      </View>
+  _renderImage = item => (
+    <TouchableOpacity onPress={() => this._handleClickImage(item)}>
+      <FastImage
+        style={styles.item}
+        source={{ uri: item.link, priority: FastImage.priority.normal }}
+        resizeMode={FastImage.resizeMode.contain}
+      />
+
     </TouchableOpacity>
   )
 
@@ -79,8 +71,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  list_item: {
+  listItem: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  item: {
+    width: width / 4,
+    height: width / 4,
+    marginBottom: 10,
   },
 });

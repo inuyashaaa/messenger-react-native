@@ -82,6 +82,7 @@ export default class HomeScreen extends Component {
         renderTabBar={props => (
           <TabBar
             {...props}
+            scrollEnabled
             indicatorStyle={{ backgroundColor: 'yellow' }}
           />
         )}

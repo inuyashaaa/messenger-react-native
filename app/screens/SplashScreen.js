@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, View, Text, AsyncStorage,
+  StyleSheet, View, Text,
 } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
+import AppConfig from '../utils/AppConfig';
+import AppPreferences from '../utils/AppPreferences';
 
 export default class SplashScreen extends Component {
   componentDidMount = async () => {
-    this.getData();
+    this._getData();
   }
 
-  getData = async () => {
-    this.setAlbumsFromUrl();
+  _getData = async () => {
+    this._setAlbumsFromUrl();
   }
 
-  setAlbumsFromUrl = async () => {
+  _setAlbumsFromUrl = async () => {
     const { navigation } = this.props;
+
     try {
       const url = [
         'https://api.imgur.com/3/album/RKdYw',
@@ -27,7 +30,7 @@ export default class SplashScreen extends Component {
 
       const headers = {
         'Content-Type': 'application/json; charset=utf-8',
-        Authorization: 'Client-ID 8199676913db8bf',
+        Authorization: `Client-ID ${AppConfig.getClientId()}`,
       };
 
       const result = await Promise.all([
@@ -55,8 +58,7 @@ export default class SplashScreen extends Component {
         { images: jsonAmi.data.images, title: 'Ami', id: 5 },
       ];
 
-      await AsyncStorage.setItem('albums', JSON.stringify(albums));
-      // navigation.navigate('MainScreen');
+      AppPreferences.saveImageAlbums(albums);
       const resetAction = StackActions.reset({
         index: 0,
         actions: [
@@ -65,7 +67,7 @@ export default class SplashScreen extends Component {
       });
       navigation.dispatch(resetAction);
     } catch (error) {
-      console.log('Error: ', error);
+      console.log('SplashScreen._setAlbumsFromUrl._error: ', error);
     }
   }
 

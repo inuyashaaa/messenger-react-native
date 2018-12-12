@@ -4,6 +4,8 @@ import cl.json.RNSharePackage;
 import cl.json.ShareApplication;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import io.sentry.RNSentryPackage;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -27,6 +29,8 @@ public class MainApplication extends Application implements ShareApplication, Re
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new RNSentryPackage(),
+            new SplashScreenReactPackage(),
             new RNGestureHandlerPackage(),
             new FastImageViewPackage(),
         new RNFetchBlobPackage(),

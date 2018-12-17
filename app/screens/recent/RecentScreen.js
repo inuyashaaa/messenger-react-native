@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-  StyleSheet,
+  Text,
   View,
-  AsyncStorage,
-  TouchableOpacity,
-  Dimensions,
-  ScrollView,
   FlatList,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import TabViewComponent from './home/TabViewComponent';
+import TabViewComponent from '../home/TabViewComponent';
+import AppPreferences from '../../utils/AppPreferences';
 
 const { width } = Dimensions.get('window');
 
@@ -22,23 +22,23 @@ export default class RecentScreen extends TabViewComponent {
   }
 
   componentDidMount = async () => {
-    const recentTickets = await AsyncStorage.getItem('recentTickets');
-    this.setState({ recentTickets: JSON.parse(recentTickets) });
+    this._loadData();
   }
 
-  _renderRecentListImage = () => {
-    const { recentTickets } = this.state;
-    if (!recentTickets.length) {
-      return null;
+  _loadData = async () => {
+    try {
+      await this._loadDataFromStore();
+    } catch (error) {
+      console.log('RecentScreen._loadData._error: ', error);
     }
+  }
 
-    return (
-      <FlatList
-        data={recentTickets}
-        renderItem={({ item }) => this._renderImage(item)}
-        numColumns={4}
-      />
-    );
+  _loadDataFromStore = async () => {
+    const recentTickets = await AppPreferences.getRecentTickets();
+    if (!recentTickets) {
+      return;
+    }
+    this.setState({ recentTickets: JSON.parse(recentTickets) });
   }
 
   _renderImage = item => (
@@ -48,18 +48,26 @@ export default class RecentScreen extends TabViewComponent {
         source={{ uri: item.link, priority: FastImage.priority.normal }}
         resizeMode={FastImage.resizeMode.contain}
       />
-
     </TouchableOpacity>
   )
 
   render() {
+    const { recentTickets } = this.state;
+    if (!recentTickets.length) {
+      return (
+        <View>
+          <Text>Nothing to show</Text>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.list_item}>
-            {this._renderRecentListImage()}
-          </View>
-        </ScrollView>
+        <FlatList
+          data={recentTickets}
+          renderItem={this._renderImage}
+          numColumns={4}
+        />
       </View>
     );
   }

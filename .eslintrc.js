@@ -26,6 +26,7 @@ module.exports = {
       "no-return-assign": "off",
       "camelcase": "off",
       "react/no-this-in-sfc": "off",
-      "guard-for-in": "off"
+      "guard-for-in": "off",
+      "import/no-extraneous-dependencies": "off"
     }
 };

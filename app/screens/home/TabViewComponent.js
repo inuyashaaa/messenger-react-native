@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import {
   View,
+  FlatList,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
-  AsyncStorage, Dimensions, FlatList,
+  Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import RNFetchBlob from 'rn-fetch-blob';
 import Share from 'react-native-share';
+import AppPreferences from '../../utils/AppPreferences';
 
 const { width } = Dimensions.get('window');
 
@@ -21,8 +23,23 @@ export default class TabViewComponent extends Component {
   }
 
   componentDidMount = async () => {
-    const albums = await AsyncStorage.getItem('albums');
-    this.setState({ albums: JSON.parse(albums) });
+    this._loadData();
+  }
+
+  _loadData = async () => {
+    await this._loadImageFromStore();
+  }
+
+  _loadImageFromStore = async () => {
+    try {
+      const albums = await AppPreferences.getImageAlbums();
+      if (!albums) {
+        return;
+      }
+      this.setState({ albums: JSON.parse(albums) });
+    } catch (error) {
+      console.log('TabViewComponent._loadImageFromStore._error: ', error);
+    }
   }
 
   _handleSendImage = async (image) => {
@@ -39,13 +56,14 @@ export default class TabViewComponent extends Component {
   }
 
   _setRecentTicket = async (image) => {
-    ticketRecent = await AsyncStorage.getItem('recentTickets');
+    ticketRecent = await AppPreferences.getRecentTickets();
+
     const ticket = [image];
     if (ticketRecent) {
       const newTicketRecent = [...ticket, ...JSON.parse(ticketRecent)];
-      return await AsyncStorage.setItem('recentTickets', JSON.stringify(newTicketRecent));
+      return await AppPreferences.saveRecentTickets(newTicketRecent);
     }
-    await AsyncStorage.setItem('recentTickets', JSON.stringify(ticket));
+    await AppPreferences.saveRecentTickets(ticket);
   }
 
   _fetchUrlImage = async (image) => {
@@ -62,35 +80,29 @@ export default class TabViewComponent extends Component {
     }
   }
 
-  _handleClickImage = async (image) => {
-    try {
-      await this._handleSendImage(image);
-    } catch (error) {
-      console.log('_handleClickImage._error: ', error);
-    }
-  }
+  _keyExtractor = item => item.id;
+
 
   _renderListImage = (positon) => {
     const { albums } = this.state;
     if (!albums.length) {
       return null;
     }
-    console.log('==============================================');
-    console.log('Album: ', albums[1]);
-    console.log('==============================================');
     return (
       <FlatList
-        data={albums[positon].images}
-        renderItem={({ item }) => this._renderImage(item)}
         numColumns={4}
+        data={albums[positon].images}
+        extraData={this.state}
+        renderItem={this._renderImage}
+        keyExtractor={this._keyExtractor}
       />
     );
   }
 
-  _renderImage = image => (
+  _renderImage = ({ item }) => (
     <TouchableOpacity
-      key={image.id}
-      onPress={() => this._handleClickImage(image)}
+      key={item.id}
+      onPress={() => this._handleSendImage(item)}
     >
       <View
         style={[
@@ -102,7 +114,7 @@ export default class TabViewComponent extends Component {
         <FastImage
           style={{ flex: 1, width: undefined, height: undefined }}
           source={{
-            uri: image.link,
+            uri: item.link,
             priority: FastImage.priority.normal,
           }}
           resizeMode={FastImage.resizeMode.contain}
@@ -121,7 +133,6 @@ export default class TabViewComponent extends Component {
             {this._renderListImage(indexOfTabView)}
           </View>
         </ScrollView>
-
       </View>
     );
   }

@@ -1,20 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
-  FlatList,
-  ScrollView,
   StyleSheet,
-  Dimensions,
-  TouchableOpacity,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { WebView } from 'react-native-webview';
 import RNFetchBlob from 'rn-fetch-blob';
 import Share from 'react-native-share';
+import _ from 'lodash';
 import AppPreferences from '../../utils/AppPreferences';
 
-const { width } = Dimensions.get('window');
-
-export default class TabViewComponent extends Component {
+export default class TabViewComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,9 +37,9 @@ export default class TabViewComponent extends Component {
     }
   }
 
-  _handleSendImage = async (image) => {
+  _handleSendImage = async (idImage) => {
     try {
-      const { base64Str, imageType } = await this._fetchUrlImage(image);
+      const { base64Str, imageType, image } = await this._fetchUrlImage(idImage);
       const shareImageBase64 = {
         url: `data:${imageType};base64,${base64Str}`,
       };
@@ -66,15 +61,25 @@ export default class TabViewComponent extends Component {
     await AppPreferences.saveRecentTickets(ticket);
   }
 
-  _fetchUrlImage = async (image) => {
+  _fetchUrlImage = async (idImage) => {
     try {
+      const { albums } = this.state;
+      const { indexOfTabView } = this.props;
+      const listImage = albums[indexOfTabView];
+      const indexImage = _.findIndex(listImage.images, { id: idImage });
+      if (indexImage === -1) {
+        return;
+      }
+      const image = listImage.images[indexImage];
+
       const res = await RNFetchBlob.fetch('GET', image.link);
       const { status } = res.info();
 
       if (status === 200) {
         const base64Str = res.base64();
-        return { base64Str, imageType: image.type };
+        return { base64Str, imageType: image.type, image };
       }
+      return;
     } catch (error) {
       console.log('BaseTabs._fetchUrlImage._error: ', error);
     }
@@ -82,57 +87,52 @@ export default class TabViewComponent extends Component {
 
   _keyExtractor = item => item.id;
 
+  _renderImages = (albums, indexOfTabView) => {
+    try {
+      const listImageToShow = albums[indexOfTabView];
+      const imageRowElementHtml = listImageToShow.images.map(image => `<img src="${image.link}" onclick="onImageClicked('${image.id}')" style="width: 24%; height: 20%;">`);
+      this.webview.injectJavaScript(`
+        onImageClicked = function(image) {
+          if (document.postMessage) {
+            document.postMessage(image);
+          } else if (window.postMessage) {
+            window.postMessage(image);
+          }
+        };
+        const imageRowHtml = ${`\`${imageRowElementHtml}\``};
+        $(\'#image-container\').append(imageRowHtml);
+      `);
+    } catch (error) {
+      console.log('TabViewComponent._renderImages._error: ', error);
+    }
+  }
 
-  _renderListImage = (positon) => {
+  _renderListImage = (indexOfTabView) => {
     const { albums } = this.state;
     if (!albums.length) {
       return null;
     }
+
     return (
-      <FlatList
-        numColumns={4}
-        data={albums[positon].images}
-        extraData={this.state}
-        renderItem={this._renderImage}
-        keyExtractor={this._keyExtractor}
+      <WebView
+        ref={ref => (this.webview = ref)}
+        javaScriptEnabled
+        domStorageEnabled
+        style={{ width: '100%', height: '100%' }}
+        source={Platform.OS === 'ios' ? require('./ImageRender.html') : { uri: 'file:///android_asset/ImageRender.html' }}
+        onMessage={(event) => {
+          this._handleSendImage(event.nativeEvent.data);
+        }}
+        onLoadEnd={() => this._renderImages(albums, indexOfTabView)}
       />
     );
   }
 
-  _renderImage = ({ item }) => (
-    <TouchableOpacity
-      key={item.id}
-      onPress={() => this._handleSendImage(item)}
-    >
-      <View
-        style={[
-          { width: (width) / 4 },
-          { height: (width) / 4 },
-          { marginBottom: 10 },
-        ]}
-      >
-        <FastImage
-          style={{ flex: 1, width: undefined, height: undefined }}
-          source={{
-            uri: item.link,
-            priority: FastImage.priority.normal,
-          }}
-          resizeMode={FastImage.resizeMode.contain}
-        />
-      </View>
-    </TouchableOpacity>
-  )
-
   render() {
     const { indexOfTabView } = this.props;
-
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {this._renderListImage(indexOfTabView)}
-          </View>
-        </ScrollView>
+        {this._renderListImage(indexOfTabView)}
       </View>
     );
   }
@@ -141,7 +141,5 @@ export default class TabViewComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

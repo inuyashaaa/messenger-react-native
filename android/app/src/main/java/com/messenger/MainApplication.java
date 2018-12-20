@@ -4,6 +4,7 @@ import cl.json.RNSharePackage;
 import cl.json.ShareApplication;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import io.sentry.RNSentryPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ShareApplication, Re
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new RNCWebViewPackage(),
             new RNSentryPackage(),
             new SplashScreenReactPackage(),
             new RNGestureHandlerPackage(),

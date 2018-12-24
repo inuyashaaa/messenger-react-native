@@ -51,6 +51,8 @@ export default class RecentScreen extends TabViewComponent {
     </TouchableOpacity>
   )
 
+  _keyExtractor = item => item.id;
+
   render() {
     const { recentTickets } = this.state;
     if (!recentTickets.length) {
@@ -67,6 +69,7 @@ export default class RecentScreen extends TabViewComponent {
           data={recentTickets}
           renderItem={this._renderImage}
           numColumns={4}
+          keyExtractor={this._keyExtractor}
         />
       </View>
     );

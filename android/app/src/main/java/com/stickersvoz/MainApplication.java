@@ -1,4 +1,4 @@
-package com.messenger;
+package com.stickersvoz;
 
 import cl.json.RNSharePackage;
 import cl.json.ShareApplication;
@@ -59,6 +59,6 @@ public class MainApplication extends Application implements ShareApplication, Re
 
   @Override
   public String getFileProviderAuthority() {
-    return "com.messenger.provider";
+    return "com.stickersvoz.provider";
   }
 }

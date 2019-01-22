@@ -23,7 +23,7 @@
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"messenger"
+                                                      moduleName:@"StickersVoz"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
 

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.messenger">
+    package="com.stickersvoz">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
@@ -13,7 +13,7 @@
       android:theme="@style/AppTheme">
       <provider
         android:name="android.support.v4.content.FileProvider"
-        android:authorities="com.messenger.provider"
+        android:authorities="com.stickersvoz.provider"
         android:grantUriPermissions="true"
         android:exported="false">
       </provider>

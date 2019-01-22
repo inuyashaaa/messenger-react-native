@@ -149,6 +149,7 @@ android {
 }
 
 dependencies {
+    compile project(':lottie-react-native')
     compile project(':react-native-webview')
     compile project(':react-native-sentry')
     compile project(':react-native-splash-screen')

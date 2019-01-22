@@ -3,6 +3,7 @@ import {
   StyleSheet, View, Text,
 } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
+import LottieView from 'lottie-react-native';
 import AppConfig from '../utils/AppConfig';
 import AppPreferences from '../utils/AppPreferences';
 
@@ -74,7 +75,11 @@ export default class SplashScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.textTitle}>MESSENGER REACT NATIVE</Text>
+        <LottieView
+          source={require('../../assets/lotties/xiao_you.json')}
+          autoPlay
+          loop
+        />
       </View>
     );
   }

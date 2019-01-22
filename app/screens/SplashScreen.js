@@ -3,7 +3,6 @@ import {
   StyleSheet, View, Text,
 } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import LottieView from 'lottie-react-native';
 import AppConfig from '../utils/AppConfig';
 import AppPreferences from '../utils/AppPreferences';
 

@@ -9,10 +9,12 @@ import RNFetchBlob from 'rn-fetch-blob';
 import FastImage from 'react-native-fast-image';
 import Share from 'react-native-share';
 import _ from 'lodash';
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, LongPressGestureHandler } from 'react-native-gesture-handler';
+import PubSub from 'pubsub-js';
 import AppPreferences from '../../utils/AppPreferences';
 
-const { width, height } = Dimensions.get('window');
+
+const { width } = Dimensions.get('window');
 export default class TabViewPureComponent extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -32,9 +34,6 @@ export default class TabViewPureComponent extends React.PureComponent {
   _loadImageFromStore = async () => {
     try {
       const albums = await AppPreferences.getImageAlbums();
-      console.log('============================================');
-      console.log('albums', JSON.parse(albums));
-      console.log('============================================');
       if (!albums) {
         return;
       }
@@ -63,9 +62,11 @@ export default class TabViewPureComponent extends React.PureComponent {
     const ticket = [image];
     if (ticketRecent) {
       const newTicketRecent = [...ticket, ...JSON.parse(ticketRecent)];
-      return await AppPreferences.saveRecentTickets(newTicketRecent);
+      await AppPreferences.saveRecentTickets(_.uniqBy(newTicketRecent, 'id'));
+      return PubSub.publish('send-sticker', 'hello');
     }
     await AppPreferences.saveRecentTickets(ticket);
+    return PubSub.publish('send-sticker', 'hello');
   }
 
   _fetchUrlImage = async (idImage) => {
@@ -97,23 +98,26 @@ export default class TabViewPureComponent extends React.PureComponent {
   _renderImage = ({ item }) => (
     <TouchableOpacity
       key={item.id}
-      onPress={() => this._handleSendImage(item)}
+      onPress={() => this._handleSendImage(item.id)}
     >
       <View
         style={[
-          { width: (width) / 4 },
-          { height: (width) / 4 },
-          { marginBottom: 10 },
+          { width: (width) / 4 - 8 },
+          { height: (width) / 4 - 8 },
+          {
+            margin: 4, elevation: 2, borderRadius: 5,
+          },
         ]}
       >
         <FastImage
-          style={{ flex: 1, width: undefined, height: undefined }}
+          style={{
+            flex: 1, width: undefined, height: undefined, borderRadius: 5, margin: 4,
+          }}
           source={{
             uri: item.link,
             priority: FastImage.priority.normal,
           }}
           resizeMode={FastImage.resizeMode.contain}
-          style={{ borderRadius: 5 }}
         />
       </View>
     </TouchableOpacity>
@@ -139,6 +143,7 @@ export default class TabViewPureComponent extends React.PureComponent {
 
   render() {
     const { indexOfTabView } = this.props;
+
     return (
       <View style={styles.container}>
         {this._renderListImage(indexOfTabView)}

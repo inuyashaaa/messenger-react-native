@@ -4,11 +4,13 @@ import {
 } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
 import LottieView from 'lottie-react-native';
+import SplashScreen from 'react-native-splash-screen';
 import AppConfig from '../utils/AppConfig';
 import AppPreferences from '../utils/AppPreferences';
 
-export default class SplashScreen extends Component {
+export default class SplashScreenn extends Component {
   componentDidMount = async () => {
+    SplashScreen.hide();
     this._getData();
   }
 

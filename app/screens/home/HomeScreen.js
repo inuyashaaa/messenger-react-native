@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Dimensions } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
-import TabViewComponent from './TabViewComponent';
+import TabViewComponent from './TabViewPureComponent';
 
 const initialLayout = {
   height: 0,
@@ -16,28 +16,32 @@ export default class HomeScreen extends Component {
       routes: [
         { key: 'agapi', title: 'Agapi' },
         { key: 'ami', title: 'Ami' },
-        { key: 'brown', title: 'Brown' },
-        { key: 'meme', title: 'Meme' },
+        // { key: 'brown', title: 'Brown' },
+        // { key: 'meme', title: 'Meme' },
         { key: 'pepe', title: 'Pepe' },
-        { key: 'voz', title: 'Voz' },
+        // { key: 'voz', title: 'Voz' },
       ],
     };
   }
 
   _renderScene = ({ route }) => {
+    const { index, routes } = this.state;
+    if (Math.abs(index - routes.indexOf(route)) > 2) {
+      return <View />;
+    }
     switch (route.key) {
     case 'agapi':
       return <TabViewComponent indexOfTabView={0} />;
     case 'ami':
-      return <TabViewComponent indexOfTabView={1} />;
-    case 'brown':
-      return <TabViewComponent indexOfTabView={2} />;
-    case 'meme':
-      return <TabViewComponent indexOfTabView={3} />;
+      return <TabViewComponent indexOfTabView={5} />;
+      // case 'brown':
+      //   return <TabViewComponent indexOfTabView={2} />;
+      // case 'meme':
+      //   return <TabViewComponent indexOfTabView={3} />;
     case 'pepe':
       return <TabViewComponent indexOfTabView={4} />;
-    case 'voz':
-      return <TabViewComponent indexOfTabView={5} />;
+    // case 'voz':
+    //   return <TabViewComponent indexOfTabView={5} />;
     default:
       return null;
     }

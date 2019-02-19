@@ -3,7 +3,9 @@ import { Sentry } from 'react-native-sentry';
 import { YellowBox } from 'react-native';
 import Screens from './app/screens/Screens';
 
-// Sentry.config('https://e1de8630dda94342a2ab62855bb5993e@sentry.io/1342423').install();
+if (!__DEV__) {
+  Sentry.config('https://e1de8630dda94342a2ab62855bb5993e@sentry.io/1342423').install();
+}
 
 const socketWarning = 'Setting a timer for a long period of time, i.e. multiple minutes, '
  + 'is a performance and correctness issue on Android as it keeps the timer module awake, '

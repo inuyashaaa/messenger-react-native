@@ -125,7 +125,9 @@ export default class TabViewComponent extends React.Component {
         onMessage={(event) => {
           this._handleSendImage(event.nativeEvent.data);
         }}
-        onLoadStart={() => this._renderImages(albums, indexOfTabView)}
+        onLoadStart={() => {
+          this._renderImages(albums, indexOfTabView);
+        }}
       />
     );
   }

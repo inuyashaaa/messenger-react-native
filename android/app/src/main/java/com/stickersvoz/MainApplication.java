@@ -4,6 +4,7 @@ import cl.json.RNSharePackage;
 import cl.json.ShareApplication;
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import io.sentry.RNSentryPackage;
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ShareApplication, Re
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new VectorIconsPackage(),
             new LottiePackage(),
             new RNCWebViewPackage(),
             new RNSentryPackage(),

@@ -25,10 +25,6 @@ export default class HomeScreen extends Component {
   }
 
   _renderScene = ({ route }) => {
-    const { index, routes } = this.state;
-    if (Math.abs(index - routes.indexOf(route)) > 3) {
-      return <View />;
-    }
     switch (route.key) {
     case 'agapi':
       return <TabViewComponent indexOfTabView={0} />;
@@ -59,10 +55,10 @@ export default class HomeScreen extends Component {
             indicatorStyle={{ backgroundColor: 'yellow', width: 80 }}
             tabStyle={{ width: 80, height: 40 }}
             style={{ height: 40 }}
-            labelStyle={{fontSize: 12}}
+            labelStyle={{ fontSize: 12 }}
           />
         )}
-        onIndexChange={index => this.setState({ index })}
+        onIndexChange={() => {}}
         initialLayout={initialLayout}
         useNativeDriver
       />
